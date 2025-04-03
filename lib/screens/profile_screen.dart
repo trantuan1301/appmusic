@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../blocs/auth/auth_cubit.dart';
 import '../models/user_model.dart';
 import 'auth/login_screen.dart';
@@ -22,8 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUser();
     super.initState();
   }
-
-  // Giả lập thông tin user, có thể thay bằng dữ liệu thực tế
   final String avatarUrl = 'https://i.pravatar.cc/300'; // random avatar
   final String userName = 'Nguyễn Văn A';
   final String email = 'nguyenvana@gmail.com';
@@ -72,8 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return null;
     }
   }
-
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -144,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         const SizedBox(height: 12),
         Text(
-          'Tuan Thanh',
+          'Xin chào',
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

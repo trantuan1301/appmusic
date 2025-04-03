@@ -28,8 +28,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => SongBloc(songRepository)..add(FetchSongs()),
         ),
-        BlocProvider(create: (_) => FavoriteBloc()),
-        BlocProvider(create: (_) => PlayerBloc([])),
+        BlocProvider<PlayerBloc>(
+          create: (_) => PlayerBloc([]),
+        ),
+        BlocProvider<FavoriteBloc>(
+          create: (context) => FavoriteBloc(
+            BlocProvider.of<PlayerBloc>(context),
+          ),
+        ),
         BlocProvider(create: (_) => AuthCubit(FirebaseAuth.instance)),
       ],
       child: MaterialApp(

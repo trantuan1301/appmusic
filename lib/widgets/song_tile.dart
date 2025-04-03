@@ -7,7 +7,6 @@ import '../models/song_model.dart';
 import '../blocs/player/player_bloc.dart';
 import '../screens/player_screen.dart';
 
-
 class SongTile extends StatelessWidget {
   final Song song;
   final VoidCallback onSongTap;
@@ -58,4 +57,3 @@ class SongTile extends StatelessWidget {
     );
   }
 }
-

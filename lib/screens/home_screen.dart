@@ -8,7 +8,6 @@ import '../widgets/song_tile.dart';
 import '../widgets/mini_player.dart';
 import 'favorite_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -18,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String searchQuery = '';
   bool isMiniPlayerVisible = true;
   int _currentIndex = 0;
-
 
   // Mở/tắt mini player
   void toggleMiniPlayer() {
@@ -39,9 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final songBloc = BlocProvider.of<SongBloc>(context);
+    final playerBloc = BlocProvider.of<PlayerBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_currentIndex == 0 ? 'Music Player' : _currentIndex == 1 ? "Favorites" : "Profile", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),),
+        title: Text(
+          _currentIndex == 0 ? 'Music Player' : _currentIndex == 1 ? "Favorites" : "Profile",
+          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),
+        ),
         actions: [
           if (_currentIndex == 0)
             IconButton(
@@ -64,33 +67,43 @@ class _HomeScreenState extends State<HomeScreen> {
         )
             : null,
       ),
-
       // Nội dung từng tab
       body: IndexedStack(
         index: _currentIndex,
         children: [
-          SongsTab(searchQuery: searchQuery, onSongTap: () => showMiniPlayer(), ), // Truyền search query vào tab bài hát
-          FavoritesScreen(onSongTap: () => showMiniPlayer(),),
+          SongsTab(
+            searchQuery: searchQuery,
+            onSongTap: () {
+              showMiniPlayer();
+              if (songBloc.state is SongLoaded) {
+                playerBloc.add(PlayerLoadSong((songBloc.state as SongLoaded).songs)); // Load danh sách bài hát từ SongLoaded
+              }
+            },
+          ), // Truyền search query vào tab bài hát
+          FavoritesScreen(
+            onSongTap: () {
+              showMiniPlayer();
+              if (songBloc.state is SongLoaded) {
+                playerBloc.add(PlayerLoadSong((songBloc.state as SongLoaded).songs)); // Load danh sách bài hát từ SongLoaded
+              }
+            },
+          ),
           ProfileScreen(),
         ],
       ),
-
       // Mini Player + Navigation bar
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (isMiniPlayerVisible)
-          MiniPlayer(onSongTap: () => toggleMiniPlayer()),
+            MiniPlayer(
+              onSongTap: () => showMiniPlayer(),
+            ),
           BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
               setState(() {
                 _currentIndex = index;
-                // if(_currentIndex == 1 || _currentIndex == 2){
-                //   isMiniPlayerVisible = false;
-                // }else{
-                //   isMiniPlayerVisible = true;
-                // }
               });
             },
             items: const [
@@ -132,4 +145,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

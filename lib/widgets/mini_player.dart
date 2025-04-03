@@ -4,35 +4,34 @@ import '../screens/player_screen.dart';
 import '../../blocs/player/player_bloc.dart';
 
 class MiniPlayer extends StatelessWidget {
-  MiniPlayer({super.key, required this.onSongTap});
   final VoidCallback onSongTap;
+
+  const MiniPlayer({Key? key, required this.onSongTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         if (state is PlayerPlaying || state is PlayerPaused) {
-          final song =
-              state is PlayerPlaying
-                  ? state.song
-                  : (state as PlayerPaused).song;
+          final song = state is PlayerPlaying ? state.song : (state as PlayerPaused).song;
           final isPlaying = state is PlayerPlaying;
-          final isShuffling =
-              state is PlayerPlaying ? state.isShuffling : false;
+          final isShuffling = state is PlayerPlaying ? state.isShuffling : false;
           final speed = state is PlayerPlaying ? state.speed : 1.0;
-          final position =
-              state is PlayerPlaying ? state.position : Duration.zero;
-          final duration =
-              state is PlayerPlaying ? state.duration : Duration.zero;
+          final position = state is PlayerPlaying ? state.position : Duration.zero;
+          final duration = state is PlayerPlaying ? state.duration : Duration.zero;
           final playerBloc = BlocProvider.of<PlayerBloc>(context);
           final audioPlayer = playerBloc.audioPlayer;
 
           return GestureDetector(
             onTap: () {
+              onSongTap();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SongDetailScreen()),
-              );
+              ).then((_) {
+                // Hiển thị lại MiniPlayer khi trở lại từ PlayerScreen
+                onSongTap();
+              });
             },
             child: Stack(
               children: [
@@ -52,7 +51,7 @@ class MiniPlayer extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                           SizedBox(width: 10),
-                          Expanded(child: Text(song.title)),
+                          Expanded(child: Text(song.title, style: TextStyle(fontWeight: FontWeight.w600))),
                           IconButton(
                             icon: Icon(Icons.skip_previous),
                             onPressed: () {
@@ -94,19 +93,18 @@ class MiniPlayer extends StatelessWidget {
                                 ChangeSpeed(value),
                               );
                             },
-                            itemBuilder:
-                                (_) => [
-                                  PopupMenuItem(
-                                    child: Text('0.5x'),
-                                    value: 0.5,
-                                  ),
-                                  PopupMenuItem(child: Text('1x'), value: 1.0),
-                                  PopupMenuItem(
-                                    child: Text('1.5x'),
-                                    value: 1.5,
-                                  ),
-                                  PopupMenuItem(child: Text('2x'), value: 2.0),
-                                ],
+                            itemBuilder: (_) => [
+                              PopupMenuItem(
+                                child: Text('0.5x'),
+                                value: 0.5,
+                              ),
+                              PopupMenuItem(child: Text('1x'), value: 1.0),
+                              PopupMenuItem(
+                                child: Text('1.5x'),
+                                value: 1.5,
+                              ),
+                              PopupMenuItem(child: Text('2x'), value: 2.0),
+                            ],
                           ),
                         ],
                       ),
@@ -118,74 +116,24 @@ class MiniPlayer extends StatelessWidget {
                         final duration = audioPlayer.duration ?? Duration.zero;
 
                         String formatTime(Duration time) {
-                          String twoDigits(int n) =>
-                              n.toString().padLeft(2, '0');
-                          final minutes = twoDigits(
-                            time.inMinutes.remainder(60),
-                          );
-                          final seconds = twoDigits(
-                            time.inSeconds.remainder(60),
-                          );
-                          return "$minutes:$seconds";
+                          String twoDigits(int n) => n.toString().padLeft(2, '0');
+                          final minutes = twoDigits(time.inMinutes.remainder(60));
+                          final seconds = twoDigits(time.inSeconds.remainder(60));
+                          return '$minutes:$seconds';
                         }
 
-                        return Column(
-                          children: [
-                            Slider(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 8,
-                              ),
-                              min: 0,
-                              max: duration.inSeconds.toDouble(),
-                              value:
-                                  position.inSeconds
-                                      .clamp(0, duration.inSeconds)
-                                      .toDouble(),
-                              onChanged: (value) {
-                                context.read<PlayerBloc>().add(
-                                  SeekSong(Duration(seconds: value.toInt())),
-                                );
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    formatTime(position),
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  Text(
-                                    formatTime(duration),
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 30),
-                          ],
+                        return Slider(
+                          value: position.inSeconds.toDouble(),
+                          max: duration.inSeconds.toDouble(),
+                          onChanged: (value) {
+                            context.read<PlayerBloc>().add(SeekSong(
+                              Duration(seconds: value.toInt()),
+                            ));
+                          },
                         );
                       },
                     ),
                   ],
-                ),
-                Positioned(
-                  right: 8,
-                  top: -8,
-                  child: Container(
-                    child: IconButton(
-                      onPressed: () {
-                        onSongTap();
-                        context.read<PlayerBloc>().add(PauseSong(song));
-                      },
-                      icon: Icon(Icons.close),
-                    ),
-                  ),
                 ),
               ],
             ),

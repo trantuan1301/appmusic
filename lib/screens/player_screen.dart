@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../blocs/player/player_bloc.dart';
 
 class SongDetailScreen extends StatefulWidget {
-
   const SongDetailScreen({
     Key? key,
   }) : super(key: key);
@@ -49,25 +47,35 @@ class _SongDetailScreenState extends State<SongDetailScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Đang phát nhạc', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),),
+        title: Text(
+          'Đang phát nhạc',
+          style: TextStyle(
+              color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),
+        ),
         centerTitle: true,
-       leading: GestureDetector(
-         onTap: () => Navigator.pop(context),
-           child: Icon(Icons.arrow_back, color: Colors.blue,)
-       ),
+        leading: GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.blue,
+            )),
       ),
       body: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
-          if (state is PlayerPlaying || state is PlayerPaused){
-            final song = state is PlayerPlaying ? state.song : (state as PlayerPaused).song;
+          if (state is PlayerPlaying || state is PlayerPaused) {
+            final song = state is PlayerPlaying
+                ? state.song
+                : (state as PlayerPaused).song;
 
             final isPlaying = state is PlayerPlaying;
-            final isShuffling = state is PlayerPlaying ? state.isShuffling : false;
+            final isShuffling =
+            state is PlayerPlaying ? state.isShuffling : false;
             final speed = state is PlayerPlaying ? state.speed : 1.0;
             final position = state is PlayerPlaying ? state.position : Duration.zero;
             final duration = state is PlayerPlaying ? state.duration : Duration.zero;
             final playerBloc = BlocProvider.of<PlayerBloc>(context);
             final audioPlayer = playerBloc.audioPlayer;
+
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -112,6 +120,54 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                     style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                   SizedBox(height: 40),
+
+                  StreamBuilder<Duration>(
+                    stream: audioPlayer.positionStream,
+                    builder: (context, snapshot) {
+                      final position = snapshot.data ?? Duration.zero;
+                      final duration = audioPlayer.duration ?? Duration.zero;
+
+                      String formatTime(Duration time) {
+                        String twoDigits(int n) => n.toString().padLeft(2, '0');
+                        final minutes = twoDigits(time.inMinutes.remainder(60));
+                        final seconds = twoDigits(time.inSeconds.remainder(60));
+                        return "$minutes:$seconds";
+                      }
+
+                      return Column(
+                        children: [
+                          Slider(
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            min: 0,
+                            max: duration.inSeconds.toDouble(),
+                            value: position.inSeconds.clamp(0, duration.inSeconds).toDouble(),
+                            onChanged: (value) {
+                              context.read<PlayerBloc>().add(
+                                SeekSong(Duration(seconds: value.toInt())),
+                              );
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  formatTime(position),
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                Text(
+                                  formatTime(duration),
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // SizedBox(height: 30,),
+                        ],
+                      );
+                    },
+                  ),
 
                   // Nút Play/Pause
                   Padding(
@@ -169,57 +225,10 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                       ],
                     ),
                   ),
-                  StreamBuilder<Duration>(
-                    stream: audioPlayer.positionStream,
-                    builder: (context, snapshot) {
-                      final position = snapshot.data ?? Duration.zero;
-                      final duration = audioPlayer.duration ?? Duration.zero;
-
-                      String formatTime(Duration time) {
-                        String twoDigits(int n) => n.toString().padLeft(2, '0');
-                        final minutes = twoDigits(time.inMinutes.remainder(60));
-                        final seconds = twoDigits(time.inSeconds.remainder(60));
-                        return "$minutes:$seconds";
-                      }
-
-                      return Column(
-                        children: [
-                          Slider(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                            min: 0,
-                            max: duration.inSeconds.toDouble(),
-                            value: position.inSeconds.clamp(0, duration.inSeconds).toDouble(),
-                            onChanged: (value) {
-                              context.read<PlayerBloc>().add(
-                                SeekSong(Duration(seconds: value.toInt())),
-                              );
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  formatTime(position),
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                                Text(
-                                  formatTime(duration),
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // SizedBox(height: 30,),
-                        ],
-                      );
-                    },
-                  ),
                 ],
               ),
             );
-          }else{
+          } else {
             return SizedBox.shrink();
           }
         },
@@ -227,4 +236,3 @@ class _SongDetailScreenState extends State<SongDetailScreen>
     );
   }
 }
-
