@@ -13,7 +13,6 @@ class AuthCubit extends Cubit<AuthState> {
 
   final userService = UserService();
 
-  // Đăng ký
   Future<void> register({
     required String email,
     required String password,
@@ -33,7 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
           });
           emit(AuthSuccess("Đăng ký thành công!", user.uid));
         } catch (firestoreError) {
-          print("🔥 Firestore error: $firestoreError");
+          print(" Firestore error: $firestoreError");
           emit(AuthFailure("Lỗi lưu thông tin người dùng: $firestoreError"));
         }
       } else {
@@ -47,7 +46,6 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  // Đăng nhập
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
     try {
@@ -72,13 +70,27 @@ class AuthCubit extends Cubit<AuthState> {
 
       emit(AuthSuccess("Đăng nhập thành công", userModel.uid));
     } catch (e) {
-      emit(AuthFailure("Lỗi đăng nhập: ${e.toString()}"));
+      emit(AuthFailure("Lỗi đăng nhập"));
     }
   }
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return false;
 
-  //
-  //
-  // Đăng xuất
+      final email = user.email;
+      if (email == null) return false;
+
+      final credential = EmailAuthProvider.credential(email: email, password: oldPassword);
+
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPassword);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      print("Error changing password: $e");
+      return false;
+    }
+  }
   Future<void> logout() async {
     await _auth.signOut();
     final prefs = await SharedPreferences.getInstance();

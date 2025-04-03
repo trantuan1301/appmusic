@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../blocs/auth/auth_cubit.dart';
 import '../models/user_model.dart';
 import 'auth/login_screen.dart';
+import 'setting_screen.dart'; // Import SettingScreen
+import 'package:music_app/screens/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -102,14 +104,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.lock,
                   title: 'Đổi mật khẩu',
                   onTap: () {
-                    // Xử lý chuyển đến trang đổi mật khẩu
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),);
                   },
                 ),
                 _buildMenuOption(
                   icon: Icons.settings,
                   title: 'Cài đặt',
                   onTap: () {
-                    // Xử lý chuyển đến trang cài đặt
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingScreen()),
+                    );
                   },
                 ),
                 const Divider(height: 32),
