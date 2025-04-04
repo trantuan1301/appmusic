@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 import 'auth/login_screen.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -24,14 +23,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: Duration(seconds: 2),
     );
 
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
     _controller.forward();
 
-    // Delay 3 giây rồi navigate sang HomeScreen
     Future.delayed(Duration(seconds: 3), () {
       _checkLogin();
     });
@@ -50,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) =>  HomeWrapper()),
+        MaterialPageRoute(builder: (_) => HomeWrapper()),
       );
     } else {
       Navigator.pushReplacement(
@@ -63,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple[700], // màu nền tuỳ chỉnh
+      backgroundColor: Colors.black87,
       body: Center(
         child: FadeTransition(
           opacity: _animation,
@@ -76,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
                 CircleAvatar(
                   radius: 60,
                   backgroundImage: AssetImage('assets/music-player.png'),
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.black87,
                 ),
                 SizedBox(height: 20),
                 // Tên App

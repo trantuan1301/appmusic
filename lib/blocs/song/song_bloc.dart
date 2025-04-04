@@ -28,12 +28,13 @@ class SongBloc extends Bloc<SongEvent, SongState> {
   void _onToggleFavorite(ToggleFavorite event, Emitter<SongState> emit) {
     if (state is SongLoaded) {
       final currentState = state as SongLoaded;
-      final updatedSongs = currentState.songs.map((song) {
-        if (song.id == event.song.id) {
-          song.isFavorite = !song.isFavorite;
-        }
-        return song;
-      }).toList();
+      final updatedSongs =
+          currentState.songs.map((song) {
+            if (song.id == event.song.id) {
+              song.isFavorite = !song.isFavorite;
+            }
+            return song;
+          }).toList();
       emit(SongLoaded(updatedSongs));
     }
   }
@@ -41,9 +42,14 @@ class SongBloc extends Bloc<SongEvent, SongState> {
   void _onSearchSongs(SearchSongs event, Emitter<SongState> emit) {
     if (state is SongLoaded) {
       final currentState = state as SongLoaded;
-      final filteredSongs = currentState.songs
-          .where((song) => song.title.toLowerCase().contains(event.query.toLowerCase()))
-          .toList();
+      final filteredSongs =
+          currentState.songs
+              .where(
+                (song) => song.title.toLowerCase().contains(
+                  event.query.toLowerCase(),
+                ),
+              )
+              .toList();
       emit(SongLoaded(filteredSongs));
     }
   }

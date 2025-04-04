@@ -25,7 +25,6 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   }
 
   void _onPlayFavorite(PlayFavorite event, Emitter<FavoriteState> emit) {
-    // Sử dụng PlayerBloc để phát nhạc theo danh sách Favorites
     playerBloc.add(PlayerLoadSong(state.favorites));
     playerBloc.add(PlaySong(event.song));
   }

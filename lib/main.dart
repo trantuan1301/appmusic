@@ -46,7 +46,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 class HomeWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -54,13 +53,10 @@ class HomeWrapper extends StatelessWidget {
       builder: (context, state) {
         if (state is SongLoaded) {
           final List<Song> songs = state.songs;
-
           // ✅ Load danh sách bài hát vào PlayerBloc
           context.read<PlayerBloc>().add(PlayerLoadSong(songs));
-
           return HomeScreen();
         }
-
         if (state is SongError) {
           return Scaffold(body: Center(child: Text('Error loading songs')));
         }

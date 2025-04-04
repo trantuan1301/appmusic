@@ -5,13 +5,13 @@ import '../blocs/favorite/favorite_event.dart';
 import '../blocs/favorite/favorite_state.dart';
 import '../models/song_model.dart';
 import '../blocs/player/player_bloc.dart';
-import '../screens/player_screen.dart';
 
 class SongTile extends StatelessWidget {
   final Song song;
   final VoidCallback onSongTap;
 
-  const SongTile({Key? key, required this.song, required this.onSongTap}) : super(key: key);
+  const SongTile({Key? key, required this.song, required this.onSongTap})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,6 @@ class SongTile extends StatelessWidget {
       builder: (context, favoriteState) {
         // Kiểm tra bài hát có trong danh sách yêu thích không
         final isFavorite = favoriteState.favorites.contains(song);
-
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: NetworkImage(song.imageUrl),
@@ -47,10 +46,6 @@ class SongTile extends StatelessWidget {
             onSongTap();
             context.read<PlayerBloc>().add(PlaySong(song));
             print('Bài hát: ${song.title}');
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SongDetailScreen()),
-            );
           },
         );
       },

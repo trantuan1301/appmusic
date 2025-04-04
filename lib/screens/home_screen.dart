@@ -4,7 +4,6 @@ import 'package:music_app/screens/profile_screen.dart';
 import 'package:music_app/screens/songs_tab.dart';
 import '../blocs/song/song_bloc.dart';
 import '../blocs/player/player_bloc.dart';
-import '../widgets/song_tile.dart';
 import '../widgets/mini_player.dart';
 import 'favorite_screen.dart';
 
@@ -17,13 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String searchQuery = '';
   bool isMiniPlayerVisible = true;
   int _currentIndex = 0;
-
-  // Mở/tắt mini player
-  void toggleMiniPlayer() {
-    setState(() {
-      isMiniPlayerVisible = !isMiniPlayerVisible;
-    });
-  }
 
   // Hiện mini player
   void showMiniPlayer() {

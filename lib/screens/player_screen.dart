@@ -75,11 +75,15 @@ class _SongDetailScreenState extends State<SongDetailScreen>
             final duration = state is PlayerPlaying ? state.duration : Duration.zero;
             final playerBloc = BlocProvider.of<PlayerBloc>(context);
             final audioPlayer = playerBloc.audioPlayer;
-
             return Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                Image.asset(
+                'assets/play_eq1.png',
+                width: 100,
+                height: 100,),
+                  SizedBox(height: 10),
                   // Ảnh tròn và xoay
                   RotationTransition(
                     turns: _rotationController,
@@ -106,14 +110,12 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                     ),
                   ),
                   SizedBox(height: 40),
-
                   // Tên bài hát
                   Text(
                     song.title,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-
                   // Tên ca sĩ
                   Text(
                     song.artist,
@@ -168,7 +170,6 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                       );
                     },
                   ),
-
                   // Nút Play/Pause
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

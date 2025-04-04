@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../blocs/auth/auth_cubit.dart';
 import '../models/user_model.dart';
 import 'auth/login_screen.dart';
-import 'setting_screen.dart'; // Import SettingScreen
 import 'package:music_app/screens/change_password_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -94,8 +93,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildProfileHeader(),
                 const SizedBox(height: 24),
                 _buildMenuOption(
-                  icon: Icons.edit,
-                  title: 'Chỉnh sửa hồ sơ',
+                  icon: Icons.access_time,
+                  title: 'Gần đây',
                   onTap: () {
                     // Xử lý chuyển đến trang chỉnh sửa hồ sơ
                   },
@@ -110,13 +109,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 _buildMenuOption(
-                  icon: Icons.settings,
-                  title: 'Cài đặt',
+                  icon: Icons.monetization_on,
+                  title: 'Nâng cấp Premium',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SettingScreen()),
-                    );
                   },
                 ),
                 const Divider(height: 32),
