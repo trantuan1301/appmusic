@@ -4,6 +4,10 @@ import '../main.dart';
 import 'auth/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
+  final Function(bool) onThemeChanged;
+
+  const SplashScreen({Key? key, required this.onThemeChanged}) : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -45,12 +49,12 @@ class _SplashScreenState extends State<SplashScreen>
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomeWrapper()),
+        MaterialPageRoute(builder: (_) => HomeWrapper(onThemeChanged: widget.onThemeChanged)),
       );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => LoginScreen(onThemeChanged: widget.onThemeChanged)),
       );
     }
   }

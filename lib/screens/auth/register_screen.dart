@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../blocs/auth/auth_cubit.dart';
+import '../../main.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  final Function(bool) onThemeChanged;
+
+  const RegisterScreen({Key? key, required this.onThemeChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +26,27 @@ class RegisterScreen extends StatelessWidget {
           elevation: 0,
         ),
         body: BlocConsumer<AuthCubit, AuthState>(
-          listener: (context, state) {
+          listener: (context, state) async {
+            final prefs = await SharedPreferences.getInstance();
+
             if (state is AuthSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
+              await prefs.setString('userId', state.userId);
+              await prefs.setBool('isLoggedIn', true);
+
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => HomeWrapper(onThemeChanged: onThemeChanged),
+                ),
               );
-              Navigator.pop(context);
             } else if (state is AuthFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.error)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.error)));
             }
           },
           builder: (context, state) {
@@ -42,7 +57,7 @@ class RegisterScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 30),
                     Text(
-                      'Đăng ký tài khoản',
+                      'Chào mừng bạn!',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -51,27 +66,75 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'Điền thông tin bên dưới để đăng ký',
+                      'Đăng ký để tiếp tục',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                     const SizedBox(height: 40),
 
-                    _buildInputField(
-                      controller: emailController,
-                      hintText: "Email",
-                      icon: Icons.email,
-                      keyboardType: TextInputType.emailAddress,
+                    // Email Field
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.email,
+                            color: Colors.blue,
+                          ),
+                          hintText: 'Email',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                     ),
                     const SizedBox(height: 16),
 
-                    _buildInputField(
-                      controller: passwordController,
-                      hintText: "Mật khẩu",
-                      icon: Icons.lock,
-                      obscureText: true,
+                    // Password Field
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.lock,
+                            color: Colors.blue,
+                          ),
+                          hintText: 'Mật khẩu',
+                          border: InputBorder.none,
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18,
+                          ),
+                        ),
+                        obscureText: true,
+                      ),
                     ),
+
                     const SizedBox(height: 30),
 
+                    // Đăng ký button
                     SizedBox(
                       width: double.infinity,
                       height: 55,
@@ -93,18 +156,23 @@ class RegisterScreen extends StatelessWidget {
                         },
                         child: state is AuthLoading
                             ? const CircularProgressIndicator(
-                          valueColor:
-                          AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         )
                             : const Text(
                           "Đăng ký",
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 16),
 
+                    // Đăng nhập link
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
@@ -123,42 +191,4 @@ class RegisterScreen extends StatelessWidget {
       ),
     );
   }
-
-  // Widget helper để tái sử dụng Field UI giống LoginScreen
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
-    bool obscureText = false,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.blue),
-          hintText: hintText,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 18),
-        ),
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-      ),
-    );
-  }
 }
-
-
-
-

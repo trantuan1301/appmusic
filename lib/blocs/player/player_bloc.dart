@@ -23,14 +23,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<SeekSong>(_onSeekSong);
     on<PlayerLoadSong>(_onLoadSongs);
 
-    /// Lắng nghe khi kết thúc bài hát
+
     _audioPlayer.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         _handleSongComplete();
       }
     });
 
-    /// Lắng nghe vị trí phát nhạc (seek bar)
+
     _audioPlayer.positionStream.listen((position) {
       if (state is PlayerPlaying) {
         final current = state as PlayerPlaying;
@@ -84,8 +84,6 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       duration: _audioPlayer.duration ?? Duration.zero,
     ));
   }
-
-
 
   Future<void> _onNextSong(NextSong event, Emitter<PlayerState> emit) async {
     if (playlist.isEmpty) return;
@@ -182,5 +180,3 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
   AudioPlayer get audioPlayer => _audioPlayer;
 }
-
-

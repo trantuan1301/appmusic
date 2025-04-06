@@ -7,7 +7,9 @@ import '../../main.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final Function(bool) onThemeChanged;
+
+  const LoginScreen({Key? key, required this.onThemeChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,9 @@ class LoginScreen extends StatelessWidget {
 
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => HomeWrapper()),
+                MaterialPageRoute(
+                  builder: (_) => HomeWrapper(onThemeChanged: onThemeChanged),
+                ),
               );
             } else if (state is AuthFailure) {
               ScaffoldMessenger.of(
@@ -143,29 +147,27 @@ class LoginScreen extends StatelessWidget {
                           ),
                           elevation: 5,
                         ),
-                        onPressed:
-                            state is AuthLoading
-                                ? null
-                                : () {
-                                  context.read<AuthCubit>().login(
-                                    email: emailController.text.trim(),
-                                    password: passwordController.text.trim(),
-                                  );
-                                },
-                        child:
-                            state is AuthLoading
-                                ? const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.white,
-                                  ),
-                                )
-                                : const Text(
-                                  "Đăng nhập",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                        onPressed: state is AuthLoading
+                            ? null
+                            : () {
+                          context.read<AuthCubit>().login(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                        },
+                        child: state is AuthLoading
+                            ? const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        )
+                            : const Text(
+                          "Đăng nhập",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
 
@@ -177,7 +179,7 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const RegisterScreen(),
+                            builder: (_) => RegisterScreen(onThemeChanged: onThemeChanged),
                           ),
                         );
                       },

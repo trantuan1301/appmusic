@@ -8,6 +8,10 @@ import '../widgets/mini_player.dart';
 import 'favorite_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  final Function(bool) onThemeChanged;
+
+  const HomeScreen({Key? key, required this.onThemeChanged}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -47,10 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
         bottom:
             _currentIndex == 0
                 ? PreferredSize(
-                  preferredSize: Size.fromHeight(56),
+                  preferredSize: Size.fromHeight(90), // Tăng chiều cao
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: _buildSearchField(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSearchField(),
+                        SizedBox(
+                          height: 8,
+                        ), // khoảng cách giữa search và chữ Playlist
+                        Text(
+                          'Playlist',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
                 : null,
@@ -79,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             },
           ),
-          ProfileScreen(),
+          ProfileScreen(onThemeChanged: widget.onThemeChanged),
         ],
       ),
       bottomNavigationBar: Column(
