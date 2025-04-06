@@ -7,6 +7,7 @@ import '../blocs/auth/auth_cubit.dart';
 import '../models/user_model.dart';
 import 'auth/login_screen.dart';
 import 'package:music_app/screens/change_password_screen.dart';
+import 'package:music_app/screens/settings_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,13 +17,13 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   @override
   void initState() {
     _loadUser();
     super.initState();
   }
-  final String avatarUrl = 'https://i.pravatar.cc/300'; // random avatar
+
+  final String avatarAssetPath = 'assets/music-player.png';
   final String userName = 'Nguyễn Văn A';
   final String email = 'nguyenvana@gmail.com';
 
@@ -37,7 +38,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userId = prefs.getString('userId');
     if (userId != null) {
-      final snapshot = await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
 
       if (snapshot.exists) {
         setState(() {
@@ -60,7 +65,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<UserModel?> getUserByUid(String uid) async {
     try {
-      final snapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final snapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (snapshot.exists && snapshot.data() != null) {
         return UserModel.fromMap(snapshot.data()!);
       }
@@ -70,6 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return null;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -93,25 +100,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildProfileHeader(),
                 const SizedBox(height: 24),
                 _buildMenuOption(
-                  icon: Icons.access_time,
-                  title: 'Gần đây',
-                  onTap: () {
-                    // Xử lý chuyển đến trang chỉnh sửa hồ sơ
-                  },
+                  icon: Icons.image,
+                  title: 'Chỉnh sửa ảnh avatar',
+                  onTap: () {},
                 ),
                 _buildMenuOption(
                   icon: Icons.lock,
                   title: 'Đổi mật khẩu',
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const ChangePasswordScreen()),);
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ChangePasswordScreen(),
+                      ),
+                    );
                   },
                 ),
                 _buildMenuOption(
-                  icon: Icons.monetization_on,
-                  title: 'Nâng cấp Premium',
+                  icon: Icons.settings,
+                  title: 'Cài đặt',
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    );
                   },
                 ),
                 const Divider(height: 32),
@@ -135,25 +147,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildProfileHeader() {
     return Column(
       children: [
-        CircleAvatar(
-          radius: 50,
-          backgroundImage: NetworkImage(avatarUrl),
-        ),
+        CircleAvatar(radius: 50, backgroundImage: AssetImage(avatarAssetPath)),
         const SizedBox(height: 12),
         Text(
           'Xin chào',
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
-        Text(
-          userModel?.email ?? '',
-          style: TextStyle(
-            color: Colors.grey[600],
-          ),
-        ),
+        Text(userModel?.email ?? '', style: TextStyle(color: Colors.grey[600])),
       ],
     );
   }
@@ -169,16 +170,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       leading: Icon(icon, color: iconColor ?? Theme.of(context).primaryColor),
       title: Text(
         title,
-        style: TextStyle(
-          color: textColor ?? Colors.black,
-          fontSize: 16,
-        ),
+        style: TextStyle(color: textColor ?? Colors.black, fontSize: 16),
       ),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
     );
   }
@@ -186,34 +182,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Đăng xuất'),
-        content: const Text('Bạn có chắc chắn muốn đăng xuất không?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Hủy'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AuthCubit>().logout();
-              Navigator.of(context).pop(); // Đóng dialog trước
-              Navigator.pushReplacement( // Đẩy login và thay thế luôn màn hiện tại
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Đã đăng xuất')),
-              );
-            },
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Đăng xuất'),
+            content: const Text('Bạn có chắc chắn muốn đăng xuất không?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Hủy'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<AuthCubit>().logout();
+                  Navigator.of(context).pop(); // Đóng dialog trước
+                  Navigator.pushReplacement(
+                    // Đẩy login và thay thế luôn màn hiện tại
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('Đã đăng xuất')));
+                },
 
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: const Text('Đăng xuất'),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Đăng xuất'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

@@ -26,9 +26,8 @@ class FavoritesScreen extends StatelessWidget {
           return SongTile(
             song: song,
             onSongTap: () {
-              // Gửi sự kiện PlayFavorite để phát nhạc
               context.read<FavoriteBloc>().add(PlayFavorite(song));
-              onSongTap(); // Gọi callback khi nhấn vào bài hát
+              onSongTap();
             },
           );
         },

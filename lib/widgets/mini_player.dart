@@ -15,13 +15,10 @@ class MiniPlayer extends StatelessWidget {
         if (state is PlayerPlaying || state is PlayerPaused) {
           final song = state is PlayerPlaying ? state.song : (state as PlayerPaused).song;
           final isPlaying = state is PlayerPlaying;
-          final isShuffling = state is PlayerPlaying ? state.isShuffling : false;
-          final speed = state is PlayerPlaying ? state.speed : 1.0;
           final position = state is PlayerPlaying ? state.position : Duration.zero;
           final duration = state is PlayerPlaying ? state.duration : Duration.zero;
           final playerBloc = BlocProvider.of<PlayerBloc>(context);
           final audioPlayer = playerBloc.audioPlayer;
-
           return GestureDetector(
             onTap: () {
               onSongTap();
@@ -29,7 +26,6 @@ class MiniPlayer extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (context) => SongDetailScreen()),
               ).then((_) {
-                // Hiển thị lại MiniPlayer khi trở lại từ PlayerScreen
                 onSongTap();
               });
             },
@@ -39,7 +35,7 @@ class MiniPlayer extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      color: Colors.blueGrey[100],
+                      color: Colors.white70,
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       height: 80,
                       child: Row(
@@ -78,34 +74,6 @@ class MiniPlayer extends StatelessWidget {
                               context.read<PlayerBloc>().add(NextSong());
                             },
                           ),
-                          IconButton(
-                            icon: Icon(
-                              isShuffling ? Icons.shuffle_on : Icons.shuffle,
-                            ),
-                            onPressed: () {
-                              context.read<PlayerBloc>().add(ToggleShuffle());
-                            },
-                          ),
-                          PopupMenuButton<double>(
-                            icon: Icon(Icons.speed),
-                            onSelected: (value) {
-                              context.read<PlayerBloc>().add(
-                                ChangeSpeed(value),
-                              );
-                            },
-                            itemBuilder: (_) => [
-                              PopupMenuItem(
-                                child: Text('0.5x'),
-                                value: 0.5,
-                              ),
-                              PopupMenuItem(child: Text('1x'), value: 1.0),
-                              PopupMenuItem(
-                                child: Text('1.5x'),
-                                value: 1.5,
-                              ),
-                              PopupMenuItem(child: Text('2x'), value: 2.0),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -121,7 +89,6 @@ class MiniPlayer extends StatelessWidget {
                           final seconds = twoDigits(time.inSeconds.remainder(60));
                           return '$minutes:$seconds';
                         }
-
                         return Slider(
                           value: position.inSeconds.toDouble(),
                           max: duration.inSeconds.toDouble(),

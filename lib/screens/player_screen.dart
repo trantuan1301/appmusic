@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:music_app/blocs/favorite/favorite_event.dart';
+import 'package:music_app/blocs/favorite/favorite_state.dart';
 import '../blocs/player/player_bloc.dart';
+import '../blocs/favorite/favorite_bloc.dart'; // Import FavoritesBloc
 
 class SongDetailScreen extends StatefulWidget {
-  const SongDetailScreen({
-    Key? key,
-  }) : super(key: key);
+  const SongDetailScreen({Key? key}) : super(key: key);
 
   @override
   _SongDetailScreenState createState() => _SongDetailScreenState();
@@ -50,49 +51,53 @@ class _SongDetailScreenState extends State<SongDetailScreen>
         title: Text(
           'Đang phát nhạc',
           style: TextStyle(
-              color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),
+            color: Colors.blue,
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
+          ),
         ),
         centerTitle: true,
         leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.blue,
-            )),
+          onTap: () => Navigator.pop(context),
+          child: Icon(Icons.arrow_back, color: Colors.blue),
+        ),
       ),
       body: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
           if (state is PlayerPlaying || state is PlayerPaused) {
-            final song = state is PlayerPlaying
-                ? state.song
-                : (state as PlayerPaused).song;
+            final song =
+                state is PlayerPlaying
+                    ? state.song
+                    : (state as PlayerPaused).song;
 
             final isPlaying = state is PlayerPlaying;
             final isShuffling =
-            state is PlayerPlaying ? state.isShuffling : false;
+                state is PlayerPlaying ? state.isShuffling : false;
             final speed = state is PlayerPlaying ? state.speed : 1.0;
-            final position = state is PlayerPlaying ? state.position : Duration.zero;
-            final duration = state is PlayerPlaying ? state.duration : Duration.zero;
+            final position =
+                state is PlayerPlaying ? state.position : Duration.zero;
+            final duration =
+                state is PlayerPlaying ? state.duration : Duration.zero;
             final playerBloc = BlocProvider.of<PlayerBloc>(context);
             final audioPlayer = playerBloc.audioPlayer;
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                Image.asset(
-                'assets/play_eq1.png',
-                width: 100,
-                height: 100,),
+                  Image.asset('assets/play_eq1.png', width: 100, height: 100),
                   SizedBox(height: 10),
                   // Ảnh tròn và xoay
                   RotationTransition(
                     turns: _rotationController,
                     child: Container(
-                      width: 250,
-                      height: 250,
+                      width: 300,
+                      height: 300,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade400, width: 4),
+                        border: Border.all(
+                          color: Colors.grey.shade400,
+                          width: 4,
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
@@ -102,10 +107,7 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                         ],
                       ),
                       child: ClipOval(
-                        child: Image.network(
-                          song.imageUrl,
-                          fit: BoxFit.cover,
-                        ),
+                        child: Image.network(song.imageUrl, fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -116,13 +118,45 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  // Tên ca sĩ
-                  Text(
-                    song.artist,
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  // Tên ca sĩ và icon trái tim
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        song.artist,
+                        style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                      SizedBox(width: 8),
+                      BlocBuilder<FavoriteBloc, FavoriteState>(
+                        builder: (context, favoritesState) {
+                          final isFavorite = favoritesState.favorites.contains(
+                            song,
+                          );
+                          return GestureDetector(
+                            onTap: () {
+                              if (isFavorite) {
+                                context.read<FavoriteBloc>().add(
+                                  RemoveFavorite(song),
+                                );
+                              } else {
+                                context.read<FavoriteBloc>().add(
+                                  AddFavorite(song),
+                                );
+                              }
+                            },
+                            child: Icon(
+                              isFavorite
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.red,
+                              size: 24,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   SizedBox(height: 40),
-
                   StreamBuilder<Duration>(
                     stream: audioPlayer.positionStream,
                     builder: (context, snapshot) {
@@ -139,10 +173,16 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                       return Column(
                         children: [
                           Slider(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
                             min: 0,
                             max: duration.inSeconds.toDouble(),
-                            value: position.inSeconds.clamp(0, duration.inSeconds).toDouble(),
+                            value:
+                                position.inSeconds
+                                    .clamp(0, duration.inSeconds)
+                                    .toDouble(),
                             onChanged: (value) {
                               context.read<PlayerBloc>().add(
                                 SeekSong(Duration(seconds: value.toInt())),
@@ -150,7 +190,9 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                             },
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -165,7 +207,6 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                               ],
                             ),
                           ),
-                          // SizedBox(height: 30,),
                         ],
                       );
                     },
@@ -179,7 +220,9 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                       children: [
                         IconButton(
                           iconSize: 32,
-                          icon: Icon(isShuffling ? Icons.shuffle_on : Icons.shuffle),
+                          icon: Icon(
+                            isShuffling ? Icons.shuffle_on : Icons.shuffle,
+                          ),
                           onPressed: () {
                             context.read<PlayerBloc>().add(ToggleShuffle());
                           },
@@ -193,7 +236,9 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                         ),
                         IconButton(
                           iconSize: 64,
-                          icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                          icon: Icon(
+                            isPlaying ? Icons.pause : Icons.play_arrow,
+                          ),
                           onPressed: () {
                             if (isPlaying) {
                               context.read<PlayerBloc>().add(PauseSong(song));
@@ -212,16 +257,17 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                           },
                         ),
                         PopupMenuButton<double>(
-                          icon: Icon(Icons.speed, size: 32,),
+                          icon: Icon(Icons.speed, size: 32),
                           onSelected: (value) {
                             context.read<PlayerBloc>().add(ChangeSpeed(value));
                           },
-                          itemBuilder: (_) => [
-                            PopupMenuItem(child: Text('0.5x'), value: 0.5),
-                            PopupMenuItem(child: Text('1x'), value: 1.0),
-                            PopupMenuItem(child: Text('1.5x'), value: 1.5),
-                            PopupMenuItem(child: Text('2x'), value: 2.0),
-                          ],
+                          itemBuilder:
+                              (_) => [
+                                PopupMenuItem(child: Text('0.5x'), value: 0.5),
+                                PopupMenuItem(child: Text('1x'), value: 1.0),
+                                PopupMenuItem(child: Text('1.5x'), value: 1.5),
+                                PopupMenuItem(child: Text('2x'), value: 2.0),
+                              ],
                         ),
                       ],
                     ),

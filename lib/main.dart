@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthCubit(FirebaseAuth.instance)),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false, // Bỏ nhãn "Debug"
         title: 'Music Player',
         theme: ThemeData(primarySwatch: Colors.blue),
         home: SplashScreen(),
@@ -46,6 +47,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class HomeWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

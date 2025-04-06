@@ -17,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isMiniPlayerVisible = true;
   int _currentIndex = 0;
 
-  // Hiện mini player
   void showMiniPlayer() {
     if (!isMiniPlayerVisible) {
       setState(() {
@@ -34,32 +33,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _currentIndex == 0 ? 'Music Player' : _currentIndex == 1 ? "Favorites" : "Profile",
-          style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600, fontSize: 24),
-        ),
-        actions: [
-          if (_currentIndex == 0)
-            IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {
-                setState(() {
-                  _currentIndex = 1; // Chuyển sang Favorites tab
-                });
-              },
-            ),
-        ],
-        // Chỉ hiện search khi ở tab bài hát
-        bottom: _currentIndex == 0
-            ? PreferredSize(
-          preferredSize: Size.fromHeight(56),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: _buildSearchField(),
+          _currentIndex == 0
+              ? 'Music Player'
+              : _currentIndex == 1
+              ? "Favorites"
+              : "Profile",
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
           ),
-        )
-            : null,
+        ),
+        bottom:
+            _currentIndex == 0
+                ? PreferredSize(
+                  preferredSize: Size.fromHeight(56),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: _buildSearchField(),
+                  ),
+                )
+                : null,
       ),
-      // Nội dung từng tab
       body: IndexedStack(
         index: _currentIndex,
         children: [
@@ -68,29 +63,30 @@ class _HomeScreenState extends State<HomeScreen> {
             onSongTap: () {
               showMiniPlayer();
               if (songBloc.state is SongLoaded) {
-                playerBloc.add(PlayerLoadSong((songBloc.state as SongLoaded).songs)); // Load danh sách bài hát từ SongLoaded
+                playerBloc.add(
+                  PlayerLoadSong((songBloc.state as SongLoaded).songs),
+                );
               }
             },
-          ), // Truyền search query vào tab bài hát
+          ),
           FavoritesScreen(
             onSongTap: () {
               showMiniPlayer();
               if (songBloc.state is SongLoaded) {
-                playerBloc.add(PlayerLoadSong((songBloc.state as SongLoaded).songs)); // Load danh sách bài hát từ SongLoaded
+                playerBloc.add(
+                  PlayerLoadSong((songBloc.state as SongLoaded).songs),
+                );
               }
             },
           ),
           ProfileScreen(),
         ],
       ),
-      // Mini Player + Navigation bar
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (isMiniPlayerVisible)
-            MiniPlayer(
-              onSongTap: () => showMiniPlayer(),
-            ),
+            MiniPlayer(onSongTap: () => showMiniPlayer()),
           BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) {
@@ -128,9 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: InputDecoration(
         hintText: 'Tìm kiếm bài hát...',
         prefixIcon: Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         filled: true,
         fillColor: Colors.white,
       ),
