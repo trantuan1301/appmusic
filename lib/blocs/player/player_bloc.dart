@@ -1,8 +1,7 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:equatable/equatable.dart';
 import '../../models/song_model.dart';
-
 part 'player_event.dart';
 part 'player_state.dart';
 
@@ -24,11 +23,13 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<SeekSong>(_onSeekSong);
     on<PlayerLoadSong>(_onLoadSongs);
 
+
     _audioPlayer.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         _handleSongComplete();
       }
     });
+
 
     _audioPlayer.positionStream.listen((position) {
       if (state is PlayerPlaying) {

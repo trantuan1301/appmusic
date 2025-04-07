@@ -6,7 +6,6 @@ import '../blocs/song/song_bloc.dart';
 import '../blocs/player/player_bloc.dart';
 import '../widgets/mini_player.dart';
 import 'favorite_screen.dart';
-import 'artist_page.dart'; // Import trang nghệ sĩ
 
 class HomeScreen extends StatefulWidget {
   final Function(bool) onThemeChanged;
@@ -42,8 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ? 'VPOP MUSIC'
               : _currentIndex == 1
               ? "Favorite"
-              : _currentIndex == 2
-              ? "Artists" // Thêm tiêu đề cho trang nghệ sĩ
               : "Profile",
           style: TextStyle(
             color: Colors.purpleAccent,
@@ -52,31 +49,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         bottom:
-        _currentIndex == 0
-            ? PreferredSize(
-          preferredSize: Size.fromHeight(90), // Tăng chiều cao
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSearchField(),
-                SizedBox(
-                  height: 8,
-                ), // khoảng cách giữa search và chữ Playlist
-                Text(
-                  'Playlist',
-                  style: TextStyle(
-                    color: Colors.purpleAccent,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 24,
+            _currentIndex == 0
+                ? PreferredSize(
+                  preferredSize: Size.fromHeight(90), // Tăng chiều cao
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSearchField(),
+                        SizedBox(
+                          height: 8,
+                        ), // khoảng cách giữa search và chữ Playlist
+                        Text(
+                          'Playlist',
+                          style: TextStyle(
+                            color: Colors.purpleAccent,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        )
-            : null,
+                )
+                : null,
       ),
       body: IndexedStack(
         index: _currentIndex,
@@ -102,7 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             },
           ),
-          ArtistPage(), // Thêm trang nghệ sĩ vào danh sách các trang
           ProfileScreen(onThemeChanged: widget.onThemeChanged),
         ],
       ),
@@ -118,9 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 _currentIndex = index;
               });
             },
-            backgroundColor: Theme.of(context).colorScheme.background, // Sử dụng colorScheme để lấy màu nền
-            selectedItemColor: Colors.amber[800], // Màu cho mục được chọn
-            unselectedItemColor: Colors.grey, // Màu cho mục không được chọn
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.library_music),
@@ -129,10 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite),
                 label: 'Yêu thích',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.supervised_user_circle),
-                label: 'Nghệ sĩ', // Thêm mục "Nghệ sĩ" vào BottomNavigationBar
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person),
