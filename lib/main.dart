@@ -70,9 +70,9 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Music Player',
-        theme: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light),
-        darkTheme: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.dark),
+        title: 'VPOP MUSIC',
+        theme: ThemeData(primarySwatch: Colors.purple, brightness: Brightness.light),
+        darkTheme: ThemeData(primarySwatch: Colors.purple, brightness: Brightness.dark),
         themeMode: _themeMode,
         home: SplashScreen(
           onThemeChanged: toggleTheme,

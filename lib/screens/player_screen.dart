@@ -49,9 +49,9 @@ class _SongDetailScreenState extends State<SongDetailScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Đang phát nhạc',
+          'VPOP MUSIC',
           style: TextStyle(
-            color: Colors.blue,
+            color: Colors.purpleAccent,
             fontWeight: FontWeight.w600,
             fontSize: 24,
           ),

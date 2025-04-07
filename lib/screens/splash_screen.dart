@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen>
                 SizedBox(height: 20),
                 // Tên App
                 Text(
-                  'My Music Player',
+                  'VPOP MUSIC',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 28,

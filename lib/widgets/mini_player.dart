@@ -10,13 +10,13 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return BlocBuilder<PlayerBloc, PlayerState>(
       builder: (context, state) {
         if (state is PlayerPlaying || state is PlayerPaused) {
           final song = state is PlayerPlaying ? state.song : (state as PlayerPaused).song;
           final isPlaying = state is PlayerPlaying;
-          final position = state is PlayerPlaying ? state.position : Duration.zero;
-          final duration = state is PlayerPlaying ? state.duration : Duration.zero;
           final playerBloc = BlocProvider.of<PlayerBloc>(context);
           final audioPlayer = playerBloc.audioPlayer;
           return GestureDetector(
@@ -35,7 +35,7 @@ class MiniPlayer extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      color: Colors.blueGrey[100],
+                      color: isDarkMode ? Colors.black87 : Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       height: 80,
                       child: Row(
@@ -47,9 +47,9 @@ class MiniPlayer extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                           SizedBox(width: 10),
-                          Expanded(child: Text(song.title, style: TextStyle(fontWeight: FontWeight.w600))),
+                          Expanded(child: Text(song.title, style: TextStyle(fontWeight: FontWeight.w600, color: isDarkMode ? Colors.white : Colors.black))),
                           IconButton(
-                            icon: Icon(Icons.skip_previous),
+                            icon: Icon(Icons.skip_previous, color: isDarkMode ? Colors.white : Colors.black),
                             onPressed: () {
                               context.read<PlayerBloc>().add(PreviousSong());
                             },
@@ -57,6 +57,7 @@ class MiniPlayer extends StatelessWidget {
                           IconButton(
                             icon: Icon(
                               isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: isDarkMode ? Colors.white : Colors.black,
                             ),
                             onPressed: () {
                               if (isPlaying) {
@@ -69,7 +70,7 @@ class MiniPlayer extends StatelessWidget {
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.skip_next),
+                            icon: Icon(Icons.skip_next, color: isDarkMode ? Colors.white : Colors.black),
                             onPressed: () {
                               context.read<PlayerBloc>().add(NextSong());
                             },
@@ -83,12 +84,6 @@ class MiniPlayer extends StatelessWidget {
                         final position = snapshot.data ?? Duration.zero;
                         final duration = audioPlayer.duration ?? Duration.zero;
 
-                        String formatTime(Duration time) {
-                          String twoDigits(int n) => n.toString().padLeft(2, '0');
-                          final minutes = twoDigits(time.inMinutes.remainder(60));
-                          final seconds = twoDigits(time.inSeconds.remainder(60));
-                          return '$minutes:$seconds';
-                        }
                         return Slider(
                           value: position.inSeconds.toDouble(),
                           max: duration.inSeconds.toDouble(),
