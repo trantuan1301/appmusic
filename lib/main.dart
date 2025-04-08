@@ -59,7 +59,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => SongBloc(SongRepository())..add(FetchSongs()),
         ),
         BlocProvider<PlayerBloc>(
-          create: (_) => PlayerBloc([]),
+          create: (_) => PlayerBloc(),
         ),
         BlocProvider<FavoriteBloc>(
           create: (context) => FavoriteBloc(

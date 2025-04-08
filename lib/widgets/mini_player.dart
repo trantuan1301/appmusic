@@ -21,6 +21,7 @@ class MiniPlayer extends StatelessWidget {
           final duration = state is PlayerPlaying ? state.duration : Duration.zero;
           final playerBloc = BlocProvider.of<PlayerBloc>(context);
           final audioPlayer = playerBloc.audioPlayer;
+
           return GestureDetector(
             onTap: () {
               onSongTap();
@@ -92,6 +93,7 @@ class MiniPlayer extends StatelessWidget {
                           final seconds = twoDigits(time.inSeconds.remainder(60));
                           return '$minutes:$seconds';
                         }
+
                         return Slider(
                           value: position.inSeconds.toDouble(),
                           max: duration.inSeconds.toDouble(),

@@ -7,12 +7,12 @@ part 'player_state.dart';
 
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final AudioPlayer _audioPlayer = AudioPlayer();
-  final List<Song> playlist;
+  final List<Song> playlist = [];
   int currentSongIndex = 0;
   bool isShuffling = false;
   double playbackSpeed = 1.0;
 
-  PlayerBloc(this.playlist) : super(PlayerStopped()) {
+  PlayerBloc() : super(PlayerStopped()) {
     on<PlaySong>(_onPlaySong);
     on<PauseSong>(_onPauseSong);
     on<ResumeSong>(_onResumeSong);
@@ -23,13 +23,11 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<SeekSong>(_onSeekSong);
     on<PlayerLoadSong>(_onLoadSongs);
 
-
     _audioPlayer.playerStateStream.listen((playerState) {
       if (playerState.processingState == ProcessingState.completed) {
         _handleSongComplete();
       }
     });
-
 
     _audioPlayer.positionStream.listen((position) {
       if (state is PlayerPlaying) {
