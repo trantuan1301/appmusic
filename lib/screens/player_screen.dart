@@ -59,7 +59,7 @@ class _SongDetailScreenState extends State<SongDetailScreen>
         centerTitle: true,
         leading: GestureDetector(
           onTap: () => Navigator.pop(context),
-          child: Icon(Icons.arrow_back, color: Colors.blue),
+          child: Icon(Icons.arrow_back, color: Colors.purpleAccent),
         ),
       ),
       body: BlocBuilder<PlayerBloc, PlayerState>(
@@ -69,7 +69,6 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                 state is PlayerPlaying
                     ? state.song
                     : (state as PlayerPaused).song;
-
             final isPlaying = state is PlayerPlaying;
             final isShuffling =
                 state is PlayerPlaying ? state.isShuffling : false;
@@ -86,7 +85,6 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                 children: [
                   Image.asset('assets/play_eq1.png', width: 100, height: 100),
                   SizedBox(height: 10),
-                  // Ảnh tròn và xoay
                   RotationTransition(
                     turns: _rotationController,
                     child: Container(

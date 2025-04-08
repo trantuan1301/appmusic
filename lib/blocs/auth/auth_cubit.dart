@@ -41,7 +41,7 @@ class AuthCubit extends Cubit<AuthState> {
     } on FirebaseAuthException catch (e) {
       emit(AuthFailure(e.message ?? "Lỗi không xác định"));
     } catch (e) {
-      print("🔥 Lỗi hệ thống chi tiết: $e");
+      print("Lỗi hệ thống chi tiết: $e");
       emit(AuthFailure("Lỗi hệ thống: $e"));
     }
   }

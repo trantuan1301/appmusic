@@ -5,7 +5,8 @@ import 'package:volume_controller/volume_controller.dart';
 class SettingsScreen extends StatefulWidget {
   final Function(bool) onThemeChanged;
 
-  const SettingsScreen({Key? key, required this.onThemeChanged}) : super(key: key);
+  const SettingsScreen({Key? key, required this.onThemeChanged})
+      : super(key: key);
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
@@ -56,14 +57,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Cài đặt chung')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch, // kéo dài chiều ngang
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text('Cài đặt âm thanh'),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Âm lượng ứng dụng',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
             Slider(
               min: 0.0,
               max: 1.0,
@@ -72,13 +79,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
               label: (_volume * 100).round().toString(),
               onChanged: (value) => _setVolume(value),
             ),
-            Text('Âm thanh hiện tại: ${(_volume * 100).round()}%'),
-            const SizedBox(height: 20),
-            const Text('Chế độ màu'),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Âm lượng hiện tại: ${(_volume * 100).round()}%',
+              ),
+            ),
+            const SizedBox(height: 30),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Tuỳ biến giao diện',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
             SwitchListTile(
-              title: const Text('Chế độ tối'),
+              title: const Text('Chế độ tối', textAlign: TextAlign.left),
               value: _isDarkMode,
               onChanged: _toggleDarkMode,
+              contentPadding: const EdgeInsets.only(left: 0),
             ),
           ],
         ),

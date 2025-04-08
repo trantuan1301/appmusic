@@ -22,6 +22,13 @@ class ArtistSongsScreen extends StatefulWidget {
 class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
   bool isMiniPlayerVisible = true;
   int _currentIndex = 0;
+  late Song _currentSong;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentSong = widget.songs.first;
+  }
 
   void showMiniPlayer() {
     if (!isMiniPlayerVisible) {
@@ -83,23 +90,43 @@ class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
       ),
       body: Column(
         children: [
+          Container(
+            width: double.infinity,
+            height: 450,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: NetworkImage(_currentSong.imageUrl),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: widget.songs.length,
               itemBuilder: (context, index) {
                 final song = widget.songs[index];
-                return ListTile(
-                  title: Text(song.title),
-                  subtitle: Text(song.artist),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(song.imageUrl),
-                    child: Icon(Icons.music_note, color: Colors.white70),
-                  ),
-                  onTap: () {
-                    playerBloc.add(PlayerLoadSong(widget.songs));
-                    playerBloc.add(PlaySong(song));
-                    showMiniPlayer();
-                  },
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(song.title),
+                      subtitle: Text(song.artist),
+                      leading: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(song.imageUrl),
+                        backgroundColor: Colors.grey,
+                        child: song.imageUrl.isEmpty ? Icon(Icons.music_note, color: Colors.white70) : null,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _currentSong = song;
+                        });
+                        playerBloc.add(PlayerLoadSong(widget.songs));
+                        playerBloc.add(PlaySong(song));
+                        showMiniPlayer();
+                      },
+                    ),
+                    Divider(),
+                  ],
                 );
               },
             ),

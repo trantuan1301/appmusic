@@ -8,7 +8,8 @@ import '../../main.dart';
 class RegisterScreen extends StatelessWidget {
   final Function(bool) onThemeChanged;
 
-  const RegisterScreen({Key? key, required this.onThemeChanged}) : super(key: key);
+  const RegisterScreen({Key? key, required this.onThemeChanged})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +19,17 @@ class RegisterScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthCubit(FirebaseAuth.instance),
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text("Đăng ký"),
-          backgroundColor: Colors.blue.shade700,
+          title: const Text(
+            "Đăng ký",
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+            ),
+          ),
+          backgroundColor: Colors.purpleAccent,
           centerTitle: true,
           elevation: 0,
         ),
@@ -61,7 +69,7 @@ class RegisterScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade800,
+                        color: Colors.black87,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -89,7 +97,7 @@ class RegisterScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           prefixIcon: const Icon(
                             Icons.email,
-                            color: Colors.blue,
+                            color: Colors.black87,
                           ),
                           hintText: 'Email',
                           border: InputBorder.none,
@@ -120,7 +128,7 @@ class RegisterScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           prefixIcon: const Icon(
                             Icons.lock,
-                            color: Colors.blue,
+                            color: Colors.black87,
                           ),
                           hintText: 'Mật khẩu',
                           border: InputBorder.none,
@@ -140,33 +148,36 @@ class RegisterScreen extends StatelessWidget {
                       height: 55,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
+                          backgroundColor: Colors.purpleAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           elevation: 5,
                         ),
-                        onPressed: state is AuthLoading
-                            ? null
-                            : () {
-                          context.read<AuthCubit>().register(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-                        },
-                        child: state is AuthLoading
-                            ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        )
-                            : const Text(
-                          "Đăng ký",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        onPressed:
+                            state is AuthLoading
+                                ? null
+                                : () {
+                                  context.read<AuthCubit>().register(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                  );
+                                },
+                        child:
+                            state is AuthLoading
+                                ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                )
+                                : const Text(
+                                  "Đăng ký",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87
+                                  ),
+                                ),
                       ),
                     ),
 
@@ -179,7 +190,7 @@ class RegisterScreen extends StatelessWidget {
                       },
                       child: const Text(
                         "Bạn đã có tài khoản? Đăng nhập",
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.black87),
                       ),
                     ),
                   ],

@@ -19,10 +19,17 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthCubit(FirebaseAuth.instance),
       child: Scaffold(
-        backgroundColor: Colors.grey[100],
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text("Đăng nhập"),
-          backgroundColor: Colors.blue.shade700,
+          title: const Text(
+            "Đăng nhập",
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.purpleAccent,
           centerTitle: true,
           elevation: 0,
         ),
@@ -62,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue.shade800,
+                        color: Colors.black87,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -90,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           prefixIcon: const Icon(
                             Icons.email,
-                            color: Colors.blue,
+                            color: Colors.black87,
                           ),
                           hintText: 'Email',
                           border: InputBorder.none,
@@ -121,7 +128,7 @@ class LoginScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           prefixIcon: const Icon(
                             Icons.lock,
-                            color: Colors.blue,
+                            color: Colors.black87,
                           ),
                           hintText: 'Mật khẩu',
                           border: InputBorder.none,
@@ -141,33 +148,36 @@ class LoginScreen extends StatelessWidget {
                       height: 55,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue.shade700,
+                          backgroundColor: Colors.purpleAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           elevation: 5,
                         ),
-                        onPressed: state is AuthLoading
-                            ? null
-                            : () {
-                          context.read<AuthCubit>().login(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                          );
-                        },
-                        child: state is AuthLoading
-                            ? const CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        )
-                            : const Text(
-                          "Đăng nhập",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        onPressed:
+                            state is AuthLoading
+                                ? null
+                                : () {
+                                  context.read<AuthCubit>().login(
+                                    email: emailController.text.trim(),
+                                    password: passwordController.text.trim(),
+                                  );
+                                },
+                        child:
+                            state is AuthLoading
+                                ? const CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                )
+                                : const Text(
+                                  "Đăng nhập",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87
+                                  ),
+                                ),
                       ),
                     ),
 
@@ -179,13 +189,16 @@ class LoginScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => RegisterScreen(onThemeChanged: onThemeChanged),
+                            builder:
+                                (_) => RegisterScreen(
+                                  onThemeChanged: onThemeChanged,
+                                ),
                           ),
                         );
                       },
                       child: const Text(
                         "Bạn chưa có tài khoản? Đăng ký",
-                        style: TextStyle(color: Colors.blue),
+                        style: TextStyle(color: Colors.black87),
                       ),
                     ),
                   ],
