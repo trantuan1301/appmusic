@@ -14,7 +14,7 @@ class ArtistScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nghệ sĩ'),
+        title: Text('Danh sách nghệ sĩ'),
       ),
       body: ListView.builder(
         itemCount: artists.length,

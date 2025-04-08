@@ -38,7 +38,7 @@ class MiniPlayer extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      color: isDarkMode ? Colors.black87 : Colors.white,
+                      color: isDarkMode ? Colors.white30 : Colors.blueGrey[50],
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       height: 80,
                       child: Row(

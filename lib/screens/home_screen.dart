@@ -44,16 +44,15 @@ class _HomeScreenState extends State<HomeScreen> {
               : _currentIndex == 1
               ? "Favorite"
               : _currentIndex == 2
-              ? "Profile"
-              : "Nghệ sĩ",
+              ? "Nghệ sĩ"
+              : "Profile",
           style: TextStyle(
             color: Colors.purpleAccent,
             fontWeight: FontWeight.w600,
             fontSize: 24,
           ),
         ),
-        bottom:
-        _currentIndex == 0
+        bottom: _currentIndex == 0
             ? PreferredSize(
           preferredSize: Size.fromHeight(90), // Tăng chiều cao
           child: Padding(
@@ -103,12 +102,12 @@ class _HomeScreenState extends State<HomeScreen> {
               }
             },
           ),
-          ProfileScreen(onThemeChanged: widget.onThemeChanged),
           // Đảm bảo rằng bạn truyền đủ các đối số cần thiết cho ArtistScreen
           if (songBloc.state is SongLoaded)
             ArtistScreen(songs: (songBloc.state as SongLoaded).songs)
           else
             Center(child: CircularProgressIndicator()),
+          ProfileScreen(onThemeChanged: widget.onThemeChanged),
         ],
       ),
       bottomNavigationBar: Column(
@@ -117,6 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
           if (isMiniPlayerVisible)
             MiniPlayer(onSongTap: () => showMiniPlayer()),
           BottomNavigationBar(
+            backgroundColor: Colors.white, // Màu nền
+            selectedItemColor: Colors.purpleAccent, // Màu khi được chọn
+            unselectedItemColor: Colors.grey, // Màu không được chọn
             currentIndex: _currentIndex,
             onTap: (index) {
               setState(() {
@@ -133,12 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: 'Yêu thích',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Cá nhân',
-              ),
-              BottomNavigationBarItem(
                 icon: Icon(Icons.mic),
                 label: 'Nghệ sĩ',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Cá nhân',
               ),
             ],
           ),
