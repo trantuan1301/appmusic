@@ -58,8 +58,7 @@ class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
             setState(() => _currentSong = state.song);
           }
         },
-        child: ListView(
-          padding: EdgeInsets.only(bottom: 80),
+        child: Column(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -77,39 +76,46 @@ class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ),
-            ...widget.songs.map((song) {
-              return Column(
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                    leading: CircleAvatar(
-                      radius: 28,
-                      backgroundImage: NetworkImage(song.imageUrl),
-                      backgroundColor: Colors.grey[300],
-                      child:
-                          song.imageUrl.isEmpty
-                              ? Icon(Icons.music_note, color: Colors.white)
-                              : null,
-                    ),
-                    title: Text(
-                      song.title,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Text(song.artist),
-                    onTap: () {
-                      setState(() => _currentSong = song);
-                      playerBloc.add(PlayerLoadSong(widget.songs));
-                      playerBloc.add(PlaySong(song));
-                      showMiniPlayer();
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Divider(height: 1, color: Colors.grey[300]),
-                  ),
-                ],
-              );
-            }).toList(),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 80),
+                itemCount: widget.songs.length,
+                itemBuilder: (context, index) {
+                  final song = widget.songs[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        leading: CircleAvatar(
+                          radius: 28,
+                          backgroundImage: NetworkImage(song.imageUrl),
+                          backgroundColor: Colors.grey[300],
+                          child:
+                              song.imageUrl.isEmpty
+                                  ? Icon(Icons.music_note, color: Colors.white)
+                                  : null,
+                        ),
+                        title: Text(
+                          song.title,
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        subtitle: Text(song.artist),
+                        onTap: () {
+                          setState(() => _currentSong = song);
+                          playerBloc.add(PlayerLoadSong(widget.songs));
+                          playerBloc.add(PlaySong(song));
+                          showMiniPlayer();
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Divider(height: 1, color: Colors.grey[300]),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
