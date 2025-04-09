@@ -21,13 +21,12 @@ class ArtistSongsScreen extends StatefulWidget {
 
 class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
   bool isMiniPlayerVisible = true;
-  int _currentIndex = 0;
   late Song _currentSong;
 
   @override
   void initState() {
     super.initState();
-    _currentSong = widget.songs.first;
+    _currentSong = widget.songs.first; // Bài hát đầu tiên của nghệ sĩ
   }
 
   void showMiniPlayer() {
@@ -38,102 +37,82 @@ class _ArtistSongsScreenState extends State<ArtistSongsScreen> {
     }
   }
 
-  void _onItemTapped(int index) {
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen(onThemeChanged: (bool value) {})),
-        );
-        break;
-      case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => FavoritesScreen(
-            onSongTap: () {
-              showMiniPlayer();
-              final songBloc = BlocProvider.of<SongBloc>(context);
-              final playerBloc = BlocProvider.of<PlayerBloc>(context);
-              if (songBloc.state is SongLoaded) {
-                playerBloc.add(
-                  PlayerLoadSong((songBloc.state as SongLoaded).songs),
-                );
-              }
-            },
-          )),
-        );
-        break;
-      case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileScreen(onThemeChanged: (bool value) {})),
-        );
-        break;
-      case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ArtistScreen(
-            songs: widget.songs,
-          )),
-        );
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final playerBloc = BlocProvider.of<PlayerBloc>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.artist}'),
-      ),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 450,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(_currentSong.imageUrl),
-                fit: BoxFit.cover,
+      appBar: AppBar(title: Text(widget.artist)),
+      body: BlocListener<PlayerBloc, PlayerState>(
+        listener: (context, state) {
+          if (state is PlayerPlaying) {
+            // Kiểm tra xem bài hát hiện tại có thuộc danh sách bài hát của nghệ sĩ không
+            if (widget.songs.contains(state.song)) {
+              setState(() {
+                _currentSong = state.song; // Cập nhật ảnh nghệ sĩ
+              });
+            }
+          }
+        },
+        child: Column(
+          children: [
+            // Ảnh của nghệ sĩ
+            Container(
+              width: double.infinity,
+              height: 450,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(_currentSong.imageUrl),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.songs.length,
-              itemBuilder: (context, index) {
-                final song = widget.songs[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      title: Text(song.title),
-                      subtitle: Text(song.artist),
-                      leading: CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(song.imageUrl),
-                        backgroundColor: Colors.grey,
-                        child: song.imageUrl.isEmpty ? Icon(Icons.music_note, color: Colors.white70) : null,
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.songs.length,
+                itemBuilder: (context, index) {
+                  final song = widget.songs[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(song.title),
+                        subtitle: Text(song.artist),
+                        leading: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(song.imageUrl),
+                          backgroundColor: Colors.grey,
+                          child:
+                              song.imageUrl.isEmpty
+                                  ? Icon(
+                                    Icons.music_note,
+                                    color: Colors.white70,
+                                  )
+                                  : null,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _currentSong = song;
+                          });
+                          playerBloc.add(PlayerLoadSong(widget.songs));
+                          playerBloc.add(PlaySong(song));
+                          showMiniPlayer();
+                        },
                       ),
-                      onTap: () {
-                        setState(() {
-                          _currentSong = song;
-                        });
-                        playerBloc.add(PlayerLoadSong(widget.songs));
-                        playerBloc.add(PlaySong(song));
-                        showMiniPlayer();
-                      },
-                    ),
-                    Divider(),
-                  ],
-                );
-              },
+                      Divider(),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-          if (isMiniPlayerVisible)
-            MiniPlayer(onSongTap: () => showMiniPlayer()),
-        ],
+            if (isMiniPlayerVisible)
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: 10,
+                ), // Dịch MiniPlayer lên 10 pixel
+                child: MiniPlayer(onSongTap: () => showMiniPlayer()),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -36,7 +36,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách nghệ sĩ',style: TextStyle(color: Colors.purpleAccent),),
+        title: Text('Danh sách nghệ sĩ',style: TextStyle(color: Colors.purpleAccent, fontSize: 18),),
       ),
       body: Column(
         children: [

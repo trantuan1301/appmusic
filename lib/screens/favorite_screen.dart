@@ -15,7 +15,7 @@ class FavoritesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách yêu thích',style: TextStyle(color: Colors.purpleAccent),),
+        title: Text('Danh sách yêu thích',style: TextStyle(color: Colors.purpleAccent, fontSize: 18),),
       ),
       body: favoriteSongs.isEmpty
           ? Center(child: Text('No favorite songs yet.'))

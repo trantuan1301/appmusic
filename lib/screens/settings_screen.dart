@@ -61,14 +61,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, // kéo dài chiều ngang
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch, // Kéo dài chiều ngang
           children: [
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Âm lượng ứng dụng',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             Slider(
@@ -85,20 +84,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 'Âm lượng hiện tại: ${(_volume * 100).round()}%',
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 16),
+            const Divider(thickness: 1), // Gạch dưới
+            const SizedBox(height: 16),
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Tuỳ biến giao diện',
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
             SwitchListTile(
-              title: const Text('Chế độ tối', textAlign: TextAlign.left),
+              title: const Text(
+                'Chế độ tối',
+                textAlign: TextAlign.left,
+              ),
               value: _isDarkMode,
               onChanged: _toggleDarkMode,
               contentPadding: const EdgeInsets.only(left: 0),
             ),
+            const SizedBox(height: 16),
+            const Divider(thickness: 1), // Gạch dưới
           ],
         ),
       ),

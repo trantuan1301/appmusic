@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _currentIndex == 0
               ? 'VPOP MUSIC'
               : _currentIndex == 1
-              ? "Favorite"
+              ? "Favorites"
               : _currentIndex == 2
               ? "Artist"
               : "Profile",
@@ -51,30 +51,29 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: 24,
           ),
         ),
-        bottom:
-            _currentIndex == 0
-                ? PreferredSize(
-                  preferredSize: Size.fromHeight(100), // Tăng chiều cao
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildSearchField(),
-                        SizedBox(height: 8),
-                        Text(
-                          'Playlist',
-                          style: TextStyle(
-                            color: Colors.purpleAccent,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ],
-                    ),
+        bottom: _currentIndex == 0
+            ? PreferredSize(
+          preferredSize: Size.fromHeight(100), // Tăng chiều cao
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSearchField(),
+                SizedBox(height: 8),
+                Text(
+                  'Playlist',
+                  style: TextStyle(
+                    color: Colors.purpleAccent,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
                   ),
-                )
-                : null,
+                ),
+              ],
+            ),
+          ),
+        )
+            : null,
       ),
       body: IndexedStack(
         index: _currentIndex,
