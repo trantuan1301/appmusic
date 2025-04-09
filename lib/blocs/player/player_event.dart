@@ -42,5 +42,3 @@ class LoadSongs extends PlayerEvent {
   final List<Song> songs;
   LoadSongs(this.songs);
 }
-
-

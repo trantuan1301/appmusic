@@ -8,7 +8,8 @@ class SongsTab extends StatelessWidget {
   final String searchQuery;
   final VoidCallback onSongTap;
 
-  const SongsTab({Key? key, this.searchQuery = '', required this.onSongTap}) : super(key: key);
+  const SongsTab({Key? key, this.searchQuery = '', required this.onSongTap})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +23,14 @@ class SongsTab extends StatelessWidget {
           final songs = state.songs;
 
           // Lọc theo searchQuery
-          final filteredSongs = songs
-              .where((song) => song.title
-              .toLowerCase()
-              .contains(searchQuery.toLowerCase()))
-              .toList();
+          final filteredSongs =
+              songs
+                  .where(
+                    (song) => song.title.toLowerCase().contains(
+                      searchQuery.toLowerCase(),
+                    ),
+                  )
+                  .toList();
 
           if (filteredSongs.isEmpty) {
             return Center(child: Text('Không tìm thấy bài hát nào.'));
@@ -36,7 +40,7 @@ class SongsTab extends StatelessWidget {
             itemCount: filteredSongs.length,
             itemBuilder: (context, index) {
               final song = filteredSongs[index];
-              return SongTile(song: song, onSongTap: onSongTap,);
+              return SongTile(song: song, onSongTap: onSongTap);
             },
           );
         } else {

@@ -15,23 +15,39 @@ class FavoritesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Danh sách yêu thích',style: TextStyle(color: Colors.purpleAccent, fontSize: 18),),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: Text(
+          'Danh sách yêu thích',
+          style: TextStyle(
+            color: Colors.purpleAccent,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
-      body: favoriteSongs.isEmpty
-          ? Center(child: Text('No favorite songs yet.'))
-          : ListView.builder(
-        itemCount: favoriteSongs.length,
-        itemBuilder: (context, index) {
-          final song = favoriteSongs[index];
-          return SongTile(
-            song: song,
-            onSongTap: () {
-              context.read<FavoriteBloc>().add(PlayFavorite(song));
-              onSongTap();
-            },
-          );
-        },
-      ),
+      body:
+          favoriteSongs.isEmpty
+              ? Center(
+                child: Text(
+                  'Bạn chưa yêu thích bài hát nào!',
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
+              )
+              : ListView.builder(
+                itemCount: favoriteSongs.length,
+                itemBuilder: (context, index) {
+                  final song = favoriteSongs[index];
+                  return SongTile(
+                    song: song,
+                    onSongTap: () {
+                      context.read<FavoriteBloc>().add(PlayFavorite(song));
+                      onSongTap();
+                    },
+                  );
+                },
+              ),
     );
   }
 }

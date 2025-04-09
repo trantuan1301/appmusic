@@ -30,8 +30,8 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 
-  // Method to access the state of MyApp from child widgets
-  static _MyAppState? of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>();
+  static _MyAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MyAppState>();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -58,25 +58,26 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (_) => SongBloc(SongRepository())..add(FetchSongs()),
         ),
-        BlocProvider<PlayerBloc>(
-          create: (_) => PlayerBloc(),
-        ),
+        BlocProvider<PlayerBloc>(create: (_) => PlayerBloc()),
         BlocProvider<FavoriteBloc>(
-          create: (context) => FavoriteBloc(
-            BlocProvider.of<PlayerBloc>(context),
-          ),
+          create:
+              (context) => FavoriteBloc(BlocProvider.of<PlayerBloc>(context)),
         ),
         BlocProvider(create: (_) => AuthCubit(FirebaseAuth.instance)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'VPOP MUSIC',
-        theme: ThemeData(primarySwatch: Colors.purple, brightness: Brightness.light),
-        darkTheme: ThemeData(primarySwatch: Colors.purple, brightness: Brightness.dark),
-        themeMode: _themeMode,
-        home: SplashScreen(
-          onThemeChanged: toggleTheme,
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          brightness: Brightness.light,
         ),
+        darkTheme: ThemeData(
+          primarySwatch: Colors.purple,
+          brightness: Brightness.dark,
+        ),
+        themeMode: _themeMode,
+        home: SplashScreen(onThemeChanged: toggleTheme),
       ),
     );
   }
@@ -93,7 +94,6 @@ class HomeWrapper extends StatelessWidget {
       builder: (context, state) {
         if (state is SongLoaded) {
           final List<Song> songs = state.songs;
-          // ✅ Load danh sách bài hát vào PlayerBloc
           context.read<PlayerBloc>().add(PlayerLoadSong(songs));
           return HomeScreen(onThemeChanged: onThemeChanged);
         }

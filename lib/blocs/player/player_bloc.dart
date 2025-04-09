@@ -32,21 +32,26 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     _audioPlayer.positionStream.listen((position) {
       if (state is PlayerPlaying) {
         final current = state as PlayerPlaying;
-        emit(PlayerPlaying(
-          song: current.song,
-          isShuffling: isShuffling,
-          speed: playbackSpeed,
-          position: position,
-          duration: _audioPlayer.duration ?? Duration.zero,
-        ));
+        emit(
+          PlayerPlaying(
+            song: current.song,
+            isShuffling: isShuffling,
+            speed: playbackSpeed,
+            position: position,
+            duration: _audioPlayer.duration ?? Duration.zero,
+          ),
+        );
       }
     });
   }
 
-  Future<void> _onLoadSongs(PlayerLoadSong event, Emitter<PlayerState> emit) async {
+  Future<void> _onLoadSongs(
+    PlayerLoadSong event,
+    Emitter<PlayerState> emit,
+  ) async {
     playlist.clear();
     playlist.addAll(event.songs);
-    currentSongIndex = 0; // reset index hoặc logic khác tùy ý bạn
+    currentSongIndex = 0;
   }
 
   Future<void> _onPlaySong(PlaySong event, Emitter<PlayerState> emit) async {
@@ -55,13 +60,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       await _audioPlayer.setUrl(event.song.songUrl);
       _audioPlayer.setSpeed(playbackSpeed);
       _audioPlayer.play();
-      emit(PlayerPlaying(
-        song: event.song,
-        isShuffling: isShuffling,
-        speed: playbackSpeed,
-        position: Duration.zero,
-        duration: _audioPlayer.duration ?? Duration.zero,
-      ));
+      emit(
+        PlayerPlaying(
+          song: event.song,
+          isShuffling: isShuffling,
+          speed: playbackSpeed,
+          position: Duration.zero,
+          duration: _audioPlayer.duration ?? Duration.zero,
+        ),
+      );
     } catch (e) {
       print('Error playing song: $e');
     }
@@ -72,22 +79,28 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     emit(PlayerPaused(event.song));
   }
 
-  Future<void> _onResumeSong(ResumeSong event, Emitter<PlayerState> emit) async {
+  Future<void> _onResumeSong(
+    ResumeSong event,
+    Emitter<PlayerState> emit,
+  ) async {
     _audioPlayer.play();
-    emit(PlayerPlaying(
-      song: event.song,
-      isShuffling: isShuffling,
-      speed: playbackSpeed,
-      position: _audioPlayer.position,
-      duration: _audioPlayer.duration ?? Duration.zero,
-    ));
+    emit(
+      PlayerPlaying(
+        song: event.song,
+        isShuffling: isShuffling,
+        speed: playbackSpeed,
+        position: _audioPlayer.position,
+        duration: _audioPlayer.duration ?? Duration.zero,
+      ),
+    );
   }
 
   Future<void> _onNextSong(NextSong event, Emitter<PlayerState> emit) async {
     if (playlist.isEmpty) return;
 
     if (isShuffling) {
-      currentSongIndex = (currentSongIndex + 1 + (playlist.length - 1)) % playlist.length;
+      currentSongIndex =
+          (currentSongIndex + 1 + (playlist.length - 1)) % playlist.length;
       currentSongIndex = _getRandomIndex(exclude: currentSongIndex);
     } else {
       currentSongIndex = (currentSongIndex + 1) % playlist.length;
@@ -97,42 +110,56 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     add(PlaySong(nextSong));
   }
 
-  Future<void> _onPreviousSong(PreviousSong event, Emitter<PlayerState> emit) async {
+  Future<void> _onPreviousSong(
+    PreviousSong event,
+    Emitter<PlayerState> emit,
+  ) async {
     if (playlist.isEmpty) return;
 
-    currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+    currentSongIndex =
+        (currentSongIndex - 1 + playlist.length) % playlist.length;
     final previousSong = playlist[currentSongIndex];
     add(PlaySong(previousSong));
   }
 
-  Future<void> _onToggleShuffle(ToggleShuffle event, Emitter<PlayerState> emit) async {
+  Future<void> _onToggleShuffle(
+    ToggleShuffle event,
+    Emitter<PlayerState> emit,
+  ) async {
     isShuffling = !isShuffling;
 
     if (state is PlayerPlaying) {
       final current = state as PlayerPlaying;
-      emit(PlayerPlaying(
-        song: current.song,
-        isShuffling: isShuffling,
-        speed: playbackSpeed,
-        position: _audioPlayer.position,
-        duration: _audioPlayer.duration ?? Duration.zero,
-      ));
+      emit(
+        PlayerPlaying(
+          song: current.song,
+          isShuffling: isShuffling,
+          speed: playbackSpeed,
+          position: _audioPlayer.position,
+          duration: _audioPlayer.duration ?? Duration.zero,
+        ),
+      );
     }
   }
 
-  Future<void> _onChangeSpeed(ChangeSpeed event, Emitter<PlayerState> emit) async {
+  Future<void> _onChangeSpeed(
+    ChangeSpeed event,
+    Emitter<PlayerState> emit,
+  ) async {
     playbackSpeed = event.speed;
     await _audioPlayer.setSpeed(playbackSpeed);
 
     if (state is PlayerPlaying) {
       final current = state as PlayerPlaying;
-      emit(PlayerPlaying(
-        song: current.song,
-        isShuffling: isShuffling,
-        speed: playbackSpeed,
-        position: _audioPlayer.position,
-        duration: _audioPlayer.duration ?? Duration.zero,
-      ));
+      emit(
+        PlayerPlaying(
+          song: current.song,
+          isShuffling: isShuffling,
+          speed: playbackSpeed,
+          position: _audioPlayer.position,
+          duration: _audioPlayer.duration ?? Duration.zero,
+        ),
+      );
     }
   }
 
@@ -141,13 +168,15 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
 
     if (state is PlayerPlaying) {
       final current = state as PlayerPlaying;
-      emit(PlayerPlaying(
-        song: current.song,
-        isShuffling: isShuffling,
-        speed: playbackSpeed,
-        position: event.position,
-        duration: _audioPlayer.duration ?? Duration.zero,
-      ));
+      emit(
+        PlayerPlaying(
+          song: current.song,
+          isShuffling: isShuffling,
+          speed: playbackSpeed,
+          position: event.position,
+          duration: _audioPlayer.duration ?? Duration.zero,
+        ),
+      );
     }
   }
 

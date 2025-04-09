@@ -25,7 +25,6 @@ class UserModel {
     required this.driverLicenseImagePath,
   });
 
-  // Tạo model từ Map
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] ?? '',
@@ -42,7 +41,6 @@ class UserModel {
     );
   }
 
-  // Convert model thành Map để lưu Firestore
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -84,7 +82,8 @@ class UserModel {
       driverLicense: driverLicense ?? this.driverLicense,
       profileImage: profileImage ?? this.profileImage,
       idCardImagePath: idCardImagePath ?? this.idCardImagePath,
-      driverLicenseImagePath: driverLicenseImagePath ?? this.driverLicenseImagePath,
+      driverLicenseImagePath:
+          driverLicenseImagePath ?? this.driverLicenseImagePath,
     );
   }
 }

@@ -73,6 +73,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthFailure("Lỗi đăng nhập"));
     }
   }
+
   Future<bool> changePassword(String oldPassword, String newPassword) async {
     try {
       final user = _auth.currentUser;
@@ -81,7 +82,10 @@ class AuthCubit extends Cubit<AuthState> {
       final email = user.email;
       if (email == null) return false;
 
-      final credential = EmailAuthProvider.credential(email: email, password: oldPassword);
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: oldPassword,
+      );
 
       await user.reauthenticateWithCredential(credential);
       await user.updatePassword(newPassword);
@@ -91,6 +95,7 @@ class AuthCubit extends Cubit<AuthState> {
       return false;
     }
   }
+
   Future<void> logout() async {
     await _auth.signOut();
     final prefs = await SharedPreferences.getInstance();

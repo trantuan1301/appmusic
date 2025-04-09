@@ -24,7 +24,7 @@ class _SongDetailScreenState extends State<SongDetailScreen>
     _rotationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 10),
-    )..repeat(); // Lặp vô tận để xoay liên tục
+    )..repeat();
   }
 
   @override
@@ -116,7 +116,6 @@ class _SongDetailScreenState extends State<SongDetailScreen>
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
-                  // Tên ca sĩ và icon trái tim
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -170,37 +169,57 @@ class _SongDetailScreenState extends State<SongDetailScreen>
 
                       return Column(
                         children: [
-                          Slider(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 8,
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              trackHeight: 4,
+                              activeTrackColor: Colors.purpleAccent,
+                              inactiveTrackColor: Colors.purpleAccent
+                                  .withOpacity(0.3),
+                              thumbColor: Colors.purpleAccent,
+                              thumbShape: RoundSliderThumbShape(
+                                enabledThumbRadius: 6,
+                              ),
+                              overlayColor: Colors.purpleAccent.withOpacity(
+                                0.2,
+                              ),
+                              overlayShape: RoundSliderOverlayShape(
+                                overlayRadius: 12,
+                              ),
                             ),
-                            min: 0,
-                            max: duration.inSeconds.toDouble(),
-                            value:
-                                position.inSeconds
-                                    .clamp(0, duration.inSeconds)
-                                    .toDouble(),
-                            onChanged: (value) {
-                              context.read<PlayerBloc>().add(
-                                SeekSong(Duration(seconds: value.toInt())),
-                              );
-                            },
+                            child: Slider(
+                              min: 0,
+                              max: duration.inSeconds.toDouble(),
+                              value:
+                                  position.inSeconds
+                                      .clamp(0, duration.inSeconds)
+                                      .toDouble(),
+                              onChanged: (value) {
+                                context.read<PlayerBloc>().add(
+                                  SeekSong(Duration(seconds: value.toInt())),
+                                );
+                              },
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
+                              horizontal: 24.0,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   formatTime(position),
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
                                 Text(
                                   formatTime(duration),
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
                                 ),
                               ],
                             ),

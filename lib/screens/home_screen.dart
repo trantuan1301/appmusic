@@ -37,14 +37,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         title: Text(
           _currentIndex == 0
-              ? 'VPOP MUSIC'
+              ? '🎵 VPOP MUSIC'
               : _currentIndex == 1
-              ? "Favorites"
+              ? "❤️ Favorites"
               : _currentIndex == 2
-              ? "Artist"
-              : "Profile",
+              ? "🎤 Artist"
+              : "👤 Profile",
           style: TextStyle(
             color: Colors.purpleAccent,
             fontWeight: FontWeight.w600,
@@ -53,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         bottom: _currentIndex == 0
             ? PreferredSize(
-          preferredSize: Size.fromHeight(100), // Tăng chiều cao
+          preferredSize: Size.fromHeight(100),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
@@ -62,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildSearchField(),
                 SizedBox(height: 8),
                 Text(
-                  'Playlist',
+                  '🎧 Playlist',
                   style: TextStyle(
                     color: Colors.purpleAccent,
                     fontWeight: FontWeight.w600,
@@ -112,9 +115,9 @@ class _HomeScreenState extends State<HomeScreen> {
           if (isMiniPlayerVisible)
             MiniPlayer(onSongTap: () => showMiniPlayer()),
           BottomNavigationBar(
-            backgroundColor: Colors.white, // Màu nền
-            selectedItemColor: Colors.purpleAccent, // Màu khi được chọn
-            unselectedItemColor: Colors.grey, // Màu không được chọn
+            backgroundColor: Colors.white,
+            selectedItemColor: Colors.purpleAccent,
+            unselectedItemColor: Colors.grey,
             currentIndex: _currentIndex,
             onTap: (index) {
               setState(() {
