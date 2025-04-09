@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../blocs/auth/auth_cubit.dart';
+import '../blocs/player/player_bloc.dart';
 import '../models/user_model.dart';
 import 'auth/login_screen.dart';
 import 'change_password_screen.dart';
@@ -41,10 +42,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String? userId = prefs.getString('userId');
     if (userId != null) {
       final snapshot =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userId)
-              .get();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
       if (snapshot.exists) {
         setState(() {
@@ -68,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<UserModel?> getUserByUid(String uid) async {
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
       if (snapshot.exists && snapshot.data() != null) {
         return UserModel.fromMap(snapshot.data()!);
       }
@@ -130,8 +131,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       MaterialPageRoute(
                         builder:
                             (_) => SettingsScreen(
-                              onThemeChanged: widget.onThemeChanged,
-                            ),
+                          onThemeChanged: widget.onThemeChanged,
+                        ),
                       ),
                     );
                   },
@@ -173,7 +174,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
-
   Widget _buildMenuOption({
     required IconData icon,
     required String title,
@@ -209,35 +209,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Đăng xuất'),
-            content: const Text('Bạn có chắc chắn muốn đăng xuất không?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Hủy'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<AuthCubit>().logout();
-                  Navigator.of(context).pop();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => LoginScreen(
-                            onThemeChanged: widget.onThemeChanged,
-                          ),
-                    ),
-                  );
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(const SnackBar(content: Text('Đã đăng xuất')));
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('Đăng xuất'),
-              ),
-            ],
+        title: const Text('Đăng xuất'),
+        content: const Text('Bạn có chắc chắn muốn đăng xuất không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Hủy'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              if (context.read<PlayerBloc>().state is PlayerPlaying) {
+                final playing = context.read<PlayerBloc>().state as PlayerPlaying;
+                context.read<PlayerBloc>().add(PauseSong(playing.song));
+              }
+              context.read<AuthCubit>().logout();
+              Navigator.of(context).pop();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen(
+                    onThemeChanged: widget.onThemeChanged,
+                  ),
+                ),
+                    (route) => false,
+              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Đã đăng xuất')));
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Đăng xuất'),
+          ),
+        ],
+      ),
     );
   }
 }

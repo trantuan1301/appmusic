@@ -39,12 +39,12 @@ class LoginScreen extends StatelessWidget {
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text(state.message)));
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => HomeWrapper(onThemeChanged: onThemeChanged),
+                      builder: (_) => HomeWrapper(onThemeChanged: onThemeChanged),
                     ),
+                        (route) => false,
                   );
                 } else if (state is AuthFailure) {
                   ScaffoldMessenger.of(

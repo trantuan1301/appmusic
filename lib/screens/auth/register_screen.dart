@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:music_app/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../blocs/auth/auth_cubit.dart';
-import '../../main.dart';
 
 class RegisterScreen extends StatelessWidget {
   final Function(bool) onThemeChanged;
@@ -42,13 +42,14 @@ class RegisterScreen extends StatelessWidget {
                     context,
                   ).showSnackBar(SnackBar(content: Text(state.message)));
 
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => HomeWrapper(onThemeChanged: onThemeChanged),
+                      builder: (_) => LoginScreen(onThemeChanged: onThemeChanged),
                     ),
+                        (route) => false,
                   );
+
                 } else if (state is AuthFailure) {
                   ScaffoldMessenger.of(
                     context,
